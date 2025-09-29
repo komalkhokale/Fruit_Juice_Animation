@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GSAP Slider</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #9da9f0;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+    .slider {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+    }
+    .slide.active {
+      opacity: 1;
+    }
+    .bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .bottle {
+      position: relative;
+      width: 250px;
+      z-index: 2;
+    }
+    .circle {
+      position: absolute;
+      top: -100px;
+      right: 50px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: white;
+      opacity: 0.6;
+    }
+    .arrow {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 30px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+      padding: 10px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="slider">
+    <div class="slide active">
+      <img src="blueberrybg.jpg" class="bg">
+      <img src="1.png" class="bottle" alt="Bottle 1">
+      <div class="circle"></div>
+    </div>
+    <div class="slide">
+      <img src="applebg.jpg" class="bg">
+      <img src="2.png" class="bottle" alt="Bottle 2">
+      <div class="circle"></div>
+    </div>
+    <div class="arrow" id="next">➡</div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll(".slide");
+    const nextBtn = document.getElementById("next");
+    let current = 0;
+
+    function showNextSlide() {
+      let next = (current + 1) % slides.length;
+
+      // Hide current
+      gsap.to(slides[current], { opacity: 0, duration: 0.5 });
+
+      // Show next
+      gsap.set(slides[next], { opacity: 1 });
+
+      // Animate background (from left)
+      gsap.fromTo(slides[next].querySelector(".bg"),
+        { x: "-100%" },
+        { x: "0%", duration: 1, ease: "power2.inOut" }
+      );
+
+      // Animate bottle (from right)
+      gsap.fromTo(slides[next].querySelector(".bottle"),
+        { x: "100%" },
+        { x: "0%", duration: 1, ease: "power2.inOut" }
+      );
+
+      // Animate circle from top
+      gsap.fromTo(slides[next].querySelector(".circle"),
+        { y: "-150", opacity: 0 },
+        { y: "0", opacity: 0.6, duration: 1, ease: "bounce.out" }
+      );
+
+      current = next;
+    }
+
+    nextBtn.addEventListener("click", showNextSlide);
+  </script>
+</body>
+</html>
